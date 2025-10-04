@@ -1,109 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitMatch AI</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: "Inter", sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitMatch AI</title>
+  <style>
+    :root{
+      --bg-1:#0f172a;
+      --bg-2:#1e293b;
+      --text:#f1f5f9;
+      --muted:#94a3b8;
+      --muted-2:#cbd5e1;
+      --brand:#38bdf8;
+      --brand-2:#0ea5e9;
+      --glass:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.12);
+      --radius:18px;
+      --shadow:0 8px 28px rgba(0,0,0,.35);
+    }
 
-        body {
-            background: radial-gradient(circle at top left, #1e293b, #0f172a);
-            color: #f1f5f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% 0%, var(--bg-2), var(--bg-1));
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
 
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2.5rem 3rem;
-            width: 90%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(12px);
-        }
+    .card{
+      width:min(94vw,460px);
+      background:var(--glass);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+      padding:28px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      text-align:center;
+    }
 
-        h1 {
-            margin-bottom: 0.5rem;
-            font-size: 1.9rem;
-            color: #38bdf8;
-        }
+    .title{margin:0;font-size:28px;letter-spacing:.3px;color:var(--brand)}
+    .subtitle{margin:0;color:var(--muted-2);font-size:15px}
 
-        p {
-            margin-bottom: 1.8rem;
-            color: #cbd5e1;
-            font-size: 0.95rem;
-        }
+    .dropzone{
+      position:relative;
+      border:2px dashed var(--brand);
+      border-radius:14px;
+      padding:24px 18px;
+      transition:.2s ease;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      background:rgba(56,189,248,.06);
+      outline:none;
+    }
+    .dropzone:hover{transform:translateY(-1px); background:rgba(56,189,248,.12)}
+    .dropzone.is-drag{background:rgba(56,189,248,.18); border-style:solid}
+    .dropzone:focus-visible{box-shadow:0 0 0 3px rgba(56,189,248,.35)}
 
-        .upload-area {
-            border: 2px dashed #38bdf8;
-            border-radius: 15px;
-            padding: 2rem;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
+    .dropzone strong{font-size:15px}
+    .hint{font-size:13px;color:var(--muted)}
+    .file-name{font-size:13px;color:var(--muted); min-height:18px}
 
-        .upload-area:hover {
-            background: rgba(56, 189, 248, 0.1);
-            transform: scale(1.02);
-        }
+    input[type="file"]{position:absolute; inset:0; opacity:0; cursor:pointer}
 
-        input[type="file"] {
-            display: none;
-        }
+    .actions{display:flex; gap:10px; justify-content:center}
+    .btn{
+      appearance:none; border:0; border-radius:12px; padding:10px 18px;
+      background:var(--brand); color:#0b1220; font-weight:700; font-size:15px;
+      transition:.2s ease; cursor:pointer;
+    }
+    .btn:hover{background:var(--brand-2); transform:translateY(-1px)}
+    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none}
 
-        #file-name {
-            margin-top: 0.8rem;
-            font-size: 0.9rem;
-            color: #94a3b8;
-        }
-
-        .button {
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem 1.5rem;
-            margin-top: 1.8rem;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.25s ease;
-            font-weight: 600;
-        }
-
-        .button:hover {
-            background: #0ea5e9;
-            transform: scale(1.03);
-        }
-    </style>
+    /* Small tweaks for very small screens */
+    @media (max-width:360px){
+      .title{font-size:24px}
+      .card{padding:22px}
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>GitMatch AI</h1>
-        <p>Upload your CV to start matching GitHub issues.</p>
 
-        <label class="upload-area" for="cv-upload">
-            <strong>📄 Click or Drag & Drop your CV here</strong>
-            <input type="file" id="cv-upload" accept=".pdf,.txt,.doc,.docx" />
-            <div id="file-name">No file selected</div>
-        </label>
+  <main class="card" role="region" aria-labelledby="app-title">
+    <h1 id="app-title" class="title">GitMatch AI</h1>
+    <p class="subtitle">Upload your CV to start matching GitHub issues.</p>
 
-        <button class="button" onclick="handleUpload()">Upload</button>
+    <label class="dropzone" id="dropzone">
+      <strong>📄 Click or Drag & Drop your CV</strong>
+      <span class="hint">Supported: .pdf, .docx, .doc, .txt</span>
+      <span id="file-name" class="file-name">No file selected</span>
+      <input id="cv-upload" type="file" accept=".pdf,.txt,.doc,.docx" />
+    </label>
+
+    <div class="actions">
+      <button id="upload-btn" class="btn" disabled>Upload</button>
     </div>
+  </main>
 
-    <!-- ✅ Only one script tag at the bottom -->
-    <script src="scripts/main.js" defer></script>
+  <script>
+    const dz = document.getElementById('dropzone');
+    const input = document.getElementById('cv-upload');
+    const fileName = document.getElementById('file-name');
+    const uploadBtn = document.getElementById('upload-btn');
+
+    function setFileName(file){
+      fileName.textContent = file ? file.name : 'No file selected';
+      uploadBtn.disabled = !file;
+    }
+
+    input.addEventListener('change', e => setFileName(e.target.files[0]));
+
+    ['dragenter','dragover'].forEach(evt =>
+      dz.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('is-drag'); })
+    );
+    ['dragleave','drop'].forEach(evt =>
+      dz.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('is-drag'); })
+    );
+    dz.addEventListener('drop', e => {
+      const file = e.dataTransfer.files?.[0];
+      if(file){ input.files = e.dataTransfer.files; setFileName(file); }
+    });
+
+    uploadBtn.addEventListener('click', () => {
+      // TODO: hook to your real upload logic (fetch/FormData)
+      alert('Uploading: ' + (input.files?.[0]?.name || 'No file'));
+    });
+  </script>
 </body>
-
 </html>
