@@ -1,54 +1,60 @@
 // scripts/main.js
 
-const input = document.getElementById('cv-upload');
-const fileName = document.getElementById('file-name');
-const uploadButton = document.querySelector('.button');
-
-// Show file name when selected
-input.addEventListener('change', () => {
-  fileName.textContent = input.files.length > 0
-    ? input.files[0].name
-    : 'No file selected';
-});
-
-// Upload logic
-async function handleUpload() {
-  const file = input.files[0];
-  if (!file) {
-    alert('Please select a CV file first!');
-    return;
-  }
-
-  uploadButton.textContent = 'Uploading...';
-  uploadButton.disabled = true;
-
-  try {
-    const formData = new FormData();
-    formData.append('cv', file);
-
-    // TODO: replace with your real agent API (like n8n webhook)
-    const response = await fetch('https://your-agent-api-url.com', {
-      method: 'POST',
-      body: formData,
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('cv-upload');
+    const fileName = document.getElementById('file-name');
+    const uploadButton = document.getElementById('upload-btn');
+  
+    if (!input || !fileName || !uploadButton) {
+      console.error('❌ One or more elements not found in HTML!');
+      return;
+    }
+  
+    // Show file name when selected
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      fileName.textContent = file ? file.name : 'No file selected';
+      uploadButton.disabled = !file;
     });
-
-    const data = await response.json();
-    console.log('Response from API:', data);
-
-    uploadButton.textContent = '✅ Uploaded!';
-    uploadButton.style.background = '#22c55e';
-
-    // Show response on the page
-    const resultDiv = document.createElement('div');
-    resultDiv.style.marginTop = '1rem';
-    resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-    document.querySelector('.container').appendChild(resultDiv);
-
-  } catch (error) {
-    console.error('Upload failed:', error);
-    uploadButton.textContent = '❌ Error';
-    uploadButton.style.background = '#ef4444';
-  } finally {
-    uploadButton.disabled = false;
-  }
-}
+  
+    // Upload logic
+    uploadButton.addEventListener('click', async () => {
+      const file = input.files[0];
+      if (!file) {
+        alert('Please select a CV file first!');
+        return;
+      }
+  
+      uploadButton.textContent = 'Uploading...';
+      uploadButton.disabled = true;
+  
+      try {
+        const formData = new FormData();
+        formData.append('cv', file);
+  
+        // ✅ Use your LIVE webhook (not the /webhook-test/)
+        const webhookUrl = 'https://kareemabogazala.app.n8n.cloud/webhook/cv';
+  
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          body: formData,
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log('✅ Response from AI Agent:', data);
+  
+        uploadButton.textContent = '✅ Uploaded!';
+        uploadButton.style.background = '#22c55e';
+  
+        // Display AI response neatly
+        const resultDiv = document.createElement('div');
+        resultDiv.style.marginTop = '1rem';
+        resultDiv.style.textAlign = 'left';
+        resultDiv.style.background = 'rgba(255,255,255,0.05)';
+        resultDiv.style.padding = '1rem';
+        resultDiv.s
+  
