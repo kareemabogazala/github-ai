@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitMatch AI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #1e293b, #0f172a);
+            color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+        }
+
+        h1 {
+            margin-bottom: 0.5rem;
+            font-size: 1.9rem;
+            color: #38bdf8;
+        }
+
+        p {
+            margin-bottom: 1.8rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #38bdf8;
+            border-radius: 15px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: rgba(56, 189, 248, 0.1);
+            transform: scale(1.02);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        #file-name {
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .button {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 10px;
+            padding: 0.8rem 1.5rem;
+            margin-top: 1.8rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.25s ease;
+            font-weight: 600;
+        }
+
+        .button:hover {
+            background: #0ea5e9;
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>GitMatch AI</h1>
+        <p>Upload your CV to start matching GitHub issues.</p>
+
+        <label class="upload-area" for="cv-upload">
+            <strong>📄 Click or Drag & Drop your CV here</strong>
+            <input type="file" id="cv-upload" accept=".pdf,.txt,.doc,.docx" />
+            <div id="file-name">No file selected</div>
+        </label>
+
+        <button class="button" onclick="handleUpload()">Upload</button>
+    </div>
+
+    <script>
+        const input = document.getElementById('cv-upload');
+        const fileName = document.getElementById('file-name');
+
+        input.addEventListener('change', () => {
+            if (input.files.length > 0) {
+                fileName.textContent = input.files[0].name;
+            } else {
+                fileName.textContent = 'No file selected';
+            }
+        });
+
+        function handleUpload() {
+            const file = input.files[0];
+            if (!file) {
+                alert('Please select a CV file first!');
+                return;
+            }
+
+            const btn = document.querySelector('.button');
+            btn.textContent = 'Uploading...';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.textContent = '✅ Uploaded!';
+                btn.style.background = '#22c55e';
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
