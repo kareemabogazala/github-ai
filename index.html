@@ -102,34 +102,8 @@
         <button class="button" onclick="handleUpload()">Upload</button>
     </div>
 
-    <script>
-        const input = document.getElementById('cv-upload');
-        const fileName = document.getElementById('file-name');
-
-        input.addEventListener('change', () => {
-            if (input.files.length > 0) {
-                fileName.textContent = input.files[0].name;
-            } else {
-                fileName.textContent = 'No file selected';
-            }
-        });
-
-        function handleUpload() {
-            const file = input.files[0];
-            if (!file) {
-                alert('Please select a CV file first!');
-                return;
-            }
-
-            const btn = document.querySelector('.button');
-            btn.textContent = 'Uploading...';
-            btn.disabled = true;
-            setTimeout(() => {
-                btn.textContent = '✅ Uploaded!';
-                btn.style.background = '#22c55e';
-            }, 1000);
-        }
-    </script>
+    <!-- ✅ Only one script tag at the bottom -->
+    <script src="scripts/main.js" defer></script>
 </body>
 
 </html>
